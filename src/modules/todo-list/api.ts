@@ -1,4 +1,9 @@
-const BASE_URL = "http://localhost:3000";
+import {
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions
+} from "@tanstack/react-query";
+import { jsonApiInstance } from "../../shared/api/api-instance.ts";
 
 export type PaginatedResult<T> = {
   data: T[];
@@ -17,14 +22,43 @@ type TodoDto = {
 };
 
 export const todoListApi = {
-  getLogoList: async (
-    { page, pageSize = 10 }: { page: number; pageSize?: number },
-    { signal }: { signal: AbortSignal }
-  ) => {
-    const res = await fetch(
-      `${BASE_URL}/tasks?_page=${page}_&per_page=${pageSize}`,
-      { signal }
-    );
-    return (await res.json()) as Promise<PaginatedResult<TodoDto>>;
+  getTodoListQueryOptions: ({
+    page,
+    pageSize = 10
+  }: {
+    page: number;
+    pageSize?: number;
+  }) => {
+    return queryOptions({
+      queryKey: ["tasks", "list", { page }],
+      queryFn: meta =>
+        jsonApiInstance<PaginatedResult<TodoDto>>(
+          `/tasks?_page=${page}_&per_page=${pageSize}`,
+          {
+            signal: meta.signal
+          }
+        ),
+      placeholderData: keepPreviousData
+    });
+  },
+
+  getTodoListInfinityQueryOptions: ({
+    pageSize = 10
+  }: {
+    pageSize?: number;
+  }) => {
+    return infiniteQueryOptions({
+      queryKey: ["tasks", "list"],
+      queryFn: meta =>
+        jsonApiInstance<PaginatedResult<TodoDto>>(
+          `/tasks?_page=${meta.pageParam}_&per_page=${pageSize}`,
+          {
+            signal: meta.signal
+          }
+        ),
+      initialPageParam: 1,
+      getNextPageParam: result => result.next,
+      select: result => result.pages.flatMap(page => page.data)
+    });
   }
 };
