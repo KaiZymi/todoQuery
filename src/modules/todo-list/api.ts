@@ -15,30 +15,22 @@ export type PaginatedResult<T> = {
   prev: number | null;
 };
 
-type TodoDto = {
+export type TodoDto = {
   id: string;
   text: string;
   done: boolean;
+  userId: string;
 };
 
 export const todoListApi = {
-  getTodoListQueryOptions: ({
-    page,
-    pageSize = 10
-  }: {
-    page: number;
-    pageSize?: number;
-  }) => {
+  getTodoListQueryOptions: () => {
     return queryOptions({
-      queryKey: ["tasks", "list", { page }],
+      queryKey: ["tasks", "list"],
       queryFn: meta =>
-        jsonApiInstance<PaginatedResult<TodoDto>>(
-          `/tasks?_page=${page}_&per_page=${pageSize}`,
-          {
-            signal: meta.signal
-          }
-        ),
-      placeholderData: keepPreviousData
+        jsonApiInstance<TodoDto[]>(`/tasks`, {
+          signal: meta.signal
+        })
+      // placeholderData: keepPreviousData
     });
   },
 
@@ -59,6 +51,26 @@ export const todoListApi = {
       initialPageParam: 1,
       getNextPageParam: result => result.next,
       select: result => result.pages.flatMap(page => page.data)
+    });
+  },
+
+  createTodo: (data: TodoDto) => {
+    return jsonApiInstance<TodoDto>(`/tasks`, {
+      method: "POST",
+      json: data
+    });
+  },
+
+  updateTodo: (id: string, data: Partial<TodoDto>) => {
+    return jsonApiInstance<TodoDto>(`/tasks/${id}`, {
+      method: "PATCH",
+      json: data
+    });
+  },
+
+  deleteTodo: (id: string) => {
+    return jsonApiInstance(`/tasks/${id}`, {
+      method: "DELETE"
     });
   }
 };
