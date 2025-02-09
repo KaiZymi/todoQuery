@@ -548,50 +548,8 @@
     {
       "id": "89",
       "text": "Create test scenarios",
-      "done": false,
-      "userId": "3"
-    },
-    {
-      "id": "90",
-      "text": "Plan disaster recovery test",
       "done": true,
       "userId": "3"
-    },
-    {
-      "id": "91",
-      "text": "Implement data retention policy",
-      "done": false,
-      "userId": "1"
-    },
-    {
-      "id": "92",
-      "text": "Coordinate logistics",
-      "done": true,
-      "userId": "1"
-    },
-    {
-      "id": "L28NIBqsaSh6Hj5P2skfo",
-      "done": false,
-      "text": "",
-      "userId": "1"
-    },
-    {
-      "id": "bSQ9N34hoRdQmC01-yzQc",
-      "done": false,
-      "text": "new",
-      "userId": "2"
-    },
-    {
-      "id": "cJZwHIJsY0i_1gKq1mg2O",
-      "done": false,
-      "text": "afsdfa. Owner: alice",
-      "userId": "1"
-    },
-    {
-      "id": "AghTjMwJoWlw_PZbPIVgw",
-      "done": false,
-      "text": "asdfasdf. Owner: alice",
-      "userId": "1"
     }
   ]
 }

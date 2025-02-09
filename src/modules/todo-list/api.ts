@@ -23,14 +23,16 @@ export type TodoDto = {
 };
 
 export const todoListApi = {
+  baseKey: "tasks",
+
   getTodoListQueryOptions: () => {
     return queryOptions({
-      queryKey: ["tasks", "list"],
+      queryKey: [todoListApi.baseKey, "list"],
       queryFn: meta =>
         jsonApiInstance<TodoDto[]>(`/tasks`, {
           signal: meta.signal
-        })
-      // placeholderData: keepPreviousData
+        }),
+      placeholderData: keepPreviousData
     });
   },
 
@@ -40,7 +42,7 @@ export const todoListApi = {
     pageSize?: number;
   }) => {
     return infiniteQueryOptions({
-      queryKey: ["tasks", "list"],
+      queryKey: [todoListApi.baseKey, "list"],
       queryFn: meta =>
         jsonApiInstance<PaginatedResult<TodoDto>>(
           `/tasks?_page=${meta.pageParam}_&per_page=${pageSize}`,
@@ -61,8 +63,8 @@ export const todoListApi = {
     });
   },
 
-  updateTodo: (id: string, data: Partial<TodoDto>) => {
-    return jsonApiInstance<TodoDto>(`/tasks/${id}`, {
+  updateTodo: (data: Partial<TodoDto> & { id: string }) => {
+    return jsonApiInstance<TodoDto>(`/tasks/${data.id}`, {
       method: "PATCH",
       json: data
     });
