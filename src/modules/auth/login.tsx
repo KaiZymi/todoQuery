@@ -1,11 +1,23 @@
 import React from "react";
-import { useAppDispatch } from "../../shared/redux.ts";
+import { useAppDispatch, useAppSelector } from "../../shared/redux.ts";
+import { loginThunk, useLoginLoading } from "./login-thunk.ts";
+import { authSlice } from "./auth.slice.ts";
 
 export function Login() {
   const dispatch = useAppDispatch();
+
+  const loginError = useAppSelector(authSlice.selectors.loginError);
+  const isLoading = useLoginLoading();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    dispatch(
+      loginThunk(
+        formData.get("login")?.toString() ?? "",
+        formData.get("password")?.toString() ?? ""
+      )
+    );
   };
 
   return (
@@ -21,12 +33,12 @@ export function Login() {
           name="password"
         ></input>
 
-        {/*{loginError && (*/}
-        {/*  <div className="bg-rose-500 text-white p-3 rounded">{loginError}</div>*/}
-        {/*)}*/}
+        {loginError && (
+          <div className="bg-rose-500 text-white p-3 rounded">{loginError}</div>
+        )}
 
         <button
-          // disabled={isLoading}
+          disabled={isLoading}
           className="p-5 rounded bg-teal-500 text-white disabled:bg-slate-300"
         >
           Вход

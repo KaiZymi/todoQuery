@@ -12,6 +12,7 @@ export const rootReducer = combineSlices();
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AppState = any;
 export type AppDispatch = typeof store.dispatch;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AppThunk<R = void> = ThunkAction<R, AppState, any, UnknownAction>;
 
 export const store = configureStore({

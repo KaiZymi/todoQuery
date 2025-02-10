@@ -3,6 +3,7 @@ import { rootReducer } from "../../shared/redux.ts";
 
 type AuthState = {
   userId: string | undefined;
+  loginError?: string;
 };
 
 export const authSlice = createSlice({
@@ -11,15 +12,19 @@ export const authSlice = createSlice({
     userId: localStorage.getItem("userId")
   } as AuthState,
   selectors: {
-    userId: state => state.userId
+    userId: state => state.userId,
+    loginError: state => state.loginError
   },
   reducers: {
     addUser(state, action: PayloadAction<{ userId: string }>) {
-      localStorage.setItem("userId", action.payload.userId); // Я так делаю, потому что это мок для простоты, по хорошему это делать в санке
       state.userId = action.payload.userId;
+      state.loginError = undefined;
     },
     removeUser(state) {
       state.userId = undefined;
+    },
+    setError(state, action: PayloadAction<string | undefined>) {
+      state.loginError = action.payload;
     }
   }
 }).injectInto(rootReducer);
