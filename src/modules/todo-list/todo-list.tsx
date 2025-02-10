@@ -1,7 +1,7 @@
 import { useTodoList } from "./use-todo-list.tsx";
-import { useCreateTodo } from "./use-create-todo.ts";
 import { useDeleteTodo } from "./use-delete-todo.ts";
 import { useToggleTodo } from "./use-toggle-todo.ts";
+import { useCreateTodo } from "./use-create-todo.ts";
 
 export const TodoList = () => {
   const { todoItems, isLoading, error } = useTodoList();
@@ -29,7 +29,7 @@ export const TodoList = () => {
           name="text"
         />
         <button
-          disabled={createTodo.isPending}
+          disabled={createTodo.isLoading}
           className="rounded p-2 border border-teal-500 disabled:opacity-50"
         >
           Создать
