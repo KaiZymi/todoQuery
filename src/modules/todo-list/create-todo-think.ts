@@ -4,6 +4,7 @@ import { TodoDto, todoListApi } from "./api.ts";
 import { queryClient } from "../../shared/api/query-client.ts";
 import { nanoid } from "nanoid";
 import { authSlice } from "../auth/auth.slice.ts";
+import { authApi } from "../auth/api.ts";
 
 export const createTodoThunk = (text: string): AppThunk => async (
   _dispatch,
@@ -15,10 +16,13 @@ export const createTodoThunk = (text: string): AppThunk => async (
     throw new Error("User not login");
   }
 
+  const user = await queryClient.fetchQuery(
+    authApi.getUserByIdQueryOptions(userId)
+  );
   const newTodo: TodoDto = {
     id: nanoid(),
     done: false,
-    text,
+    text: `${text}. Owner: ${user.login}`,
     userId
   };
 
@@ -27,11 +31,11 @@ export const createTodoThunk = (text: string): AppThunk => async (
   });
 
   const prevTasks = queryClient.getQueryData(
-    todoListApi.getTodoListQueryOptions().queryKey
+    todoListApi.getTodoListQueryOptions({ userId }).queryKey
   );
 
   queryClient.setQueryData(
-    todoListApi.getTodoListQueryOptions().queryKey,
+    todoListApi.getTodoListQueryOptions({ userId }).queryKey,
     tasks => [...(tasks ?? []), newTodo]
   );
 
@@ -41,7 +45,7 @@ export const createTodoThunk = (text: string): AppThunk => async (
     }).mutate(newTodo);
   } catch (e) {
     queryClient.setQueryData(
-      todoListApi.getTodoListQueryOptions().queryKey,
+      todoListApi.getTodoListQueryOptions({ userId }).queryKey,
       prevTasks
     );
     console.error(e);

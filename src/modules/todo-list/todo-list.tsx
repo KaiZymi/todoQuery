@@ -2,22 +2,20 @@ import { useTodoList } from "./use-todo-list.tsx";
 import { useDeleteTodo } from "./use-delete-todo.ts";
 import { useToggleTodo } from "./use-toggle-todo.ts";
 import { useCreateTodo } from "./use-create-todo.ts";
+import { useSuspenseUser } from "../auth/useUser.ts";
 
 export const TodoList = () => {
-  const { todoItems, isLoading, error } = useTodoList();
+  const { todoItems } = useTodoList();
+  const { data: user } = useSuspenseUser();
   const createTodo = useCreateTodo();
   const deleteTodo = useDeleteTodo();
   const { toggleTodo } = useToggleTodo();
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
-
-  if (error) {
-    return <div>error: {JSON.stringify(error)}</div>;
-  }
 
   return (
     <div className={"p-5 mx-auto max-w-[800px] text-center"}>
+      <h1 className="text-3xl font-bold underline mb-5">
+        TodoList {user.login}
+      </h1>
       <form
         action=""
         className="flex gap-2 mb-5"
